@@ -1,79 +1,93 @@
 ﻿<script>
-    angular.module("iassetApp", [])
-           .controller('gateController', function($scope, $http){
-               $scope.Title = "Gate management app";
+angular.module("iassetApp", ['ngRoute'])
+    .config(function ($routeProvider) {
+        $routeProvider.when("/", {
+            templateUrl: "/ClientViews/FlightLists.html",
+            controller: 'gateController'
+        });
 
-               $scope.gates = {};
-               $scope.currentGate = {}
+        $routeProvider.when("/edit/:flightNo", {
+            templateUrl: "/ClientViews/EditFlight.html",
+            controller: 'flightController'
+        });
+    })
+    .controller('gateController', function ($scope, $http, $routeParams) {
+        $scope.Title = "Gate management app";
+        $scope.gates = {};
+        $scope.currentGate = {};
+        $scope.unAssignedFlights = [];
+        var loaded = false;
 
-               $http.get('/api/Gate/Test')
-                    .success(function (data) {
-                        $scope.gates = data;
-                        $scope.currentGate = data[0];
-                        for (var i = 0; i < data.length; i++)
-                        {
-                            for (var j = 0; j < data[i].Flights.length; j++)
-                            {
-                                data[i].Flights[j].Arrival = new Date(data[i].Flights[j].Arrival).toLocaleTimeString();
-                                data[i].Flights[j].Depature = new Date(data[i].Flights[j].Depature).toLocaleTimeString();
-                            }
+        init = function () {
+            if (!loaded) {
+                $http.get('/api/Gate/Test')
+                .success(function (data) {
+                    $scope.gates = data;
+                    $scope.currentGate = $scope.gates[0];
+                    for (var i = 0; i < $scope.gates.length; i++) {
+                        for (var j = 0; j < $scope.gates[i].Flights.length; j++) {
+                            $scope.gates[i].Flights[j].Arrival = new Date($scope.gates[i].Flights[j].Arrival).toLocaleTimeString();
+                            $scope.gates[i].Flights[j].Depature = new Date($scope.gates[i].Flights[j].Depature).toLocaleTimeString();
                         }
-                    })
-                    .error(function (data) {
-                        console.log('get gates data error');
-                    });
+                    }
+                    loaded = true;
+                })
+                .error(function (data) {
+                    console.log('get gates data error');
+                });
+            }
+        }
 
-               $scope.cancel = function (FlightNo) {
-                   $scope.currentGate.Flights = $scope.currentGate.Flights.filter(function (flight) {
-                       return flight.FlightNo != FlightNo;
-                   })
-               };
+        init();
 
-               $scope.select = function (gate) {
-                   $scope.currentGate = gate;
-               };
-           });
+        $scope.cancel = function (FlightNo) {
+            $scope.currentGate.Flights = $scope.currentGate.Flights.filter(function (flight) {
+                var result = flight.FlightNo != FlightNo;
+                if (!result) {
+                    $scope.unAssignedFlights.push(flight);
+                }
+                return result;
+            });
+        };
+
+        $scope.edit = function () {
+            console.log($routeParams.flightNo)
+        }
+
+        $scope.select = function (gate) {
+            $scope.currentGate = gate;
+        };
+
+        $scope.AddToCurrentGate = function (FlightNo) {
+            var no = FlightNo;
+            $scope.unAssignedFlights = $scope.unAssignedFlights.filter(function (flight) {
+                if (flight.FlightNo == no) {
+                    $scope.currentGate.Flights.push(flight);
+                }
+                return flight.FlightNo != no;
+            });
+        }
+    })
+    .controller("flightController", function ($scope, $http, $routeParams) {
+        $scope.Title = "Edit flight";
+        $scope.FlightNo = $routeParams.flightNo;
+
+        init = function () {
+            angular.forEach($scope.currentGate.Flights, function (val, key) {
+                if (val.FlightNo == $scope.FlightNo) {
+                    $scope.currentFlight = val;
+                }
+            });
+        }
+
+        init();
+
+        $scope.save = function (flight) {
+            console.log(flight);
+        };
+    });
 </script>
+<script src="~/Scripts/angular-route.js"></script>
 <div ng-controller="gateController">
-    <h1>{{Title}}</h1>
-    <div ng-repeat="gate in gates">
-        <button ng-click="select(gate)">Gate {{gate.GateNumber}}</button>
-    </div>
-    <div class="panel panel-default">
-        <div class="row">
-            <h2>Gate: {{currentGate.GateNumber}}</h2>
-        </div>
-            <div class="row" ng-repeat="flights in currentGate.Flights">
-                <div class="col-xs-1">
-                    <strong>Flight NO</strong>
-                </div>
-                <div class="col-xs-1">
-                    <span class="pull-right label label-primary">
-                        {{flights.FlightNo}}
-                    </span>
-                </div>
-                <div class="col-xs-1">
-                    <strong>Arrival</strong>
-                </div>
-                <div class="col-xs-1">
-                    <span class="pull-right label label-primary">
-                        {{flights.Arrival}}
-                    </span>
-                </div>
-                <div class="col-xs-1">
-                    <strong>Depature</strong>
-                </div>
-                <div class="col-xs-1">
-                    <span class="pull-right label label-primary">
-                        {{flights.Depature}}
-                    </span>
-                </div>
-                <div class="col-xs-1">
-                    <button  ng-click="edit(fligts.FlightNo)">Edit</button>
-                </div>
-                <div class="col-xs-1">
-                    <button  ng-click="cancel(flights.FlightNo)">Cancel</button>
-                </div>
-            </div>
-        </div>
+    <ng-view />
 </div>

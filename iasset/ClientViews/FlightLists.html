@@ -1,0 +1,76 @@
+﻿<div ng-controller="gateController">
+    <h1>{{Title}}</h1>
+    <div ng-repeat="gate in gates">
+        <button ng-click="select(gate)">Gate {{gate.GateNumber}}</button>
+    </div>
+    <div class="panel panel-default">
+        <div class="row">
+            <h2>Current Gate: {{currentGate.GateNumber}}</h2>
+        </div>
+        <div class="row" ng-repeat="flight in currentGate.Flights">
+            <div class="col-xs-1">
+                <strong>Flight NO</strong>
+            </div>
+            <div class="col-xs-1">
+                <span class="pull-right label label-primary">
+                    {{flight.FlightNo}}
+                </span>
+            </div>
+            <div class="col-xs-1">
+                <strong>Arrival</strong>
+            </div>
+            <div class="col-xs-1">
+                <span class="pull-right label label-primary">
+                    {{flight.Arrival}}
+                </span>
+            </div>
+            <div class="col-xs-1">
+                <strong>Depature</strong>
+            </div>
+            <div class="col-xs-1">
+                <span class="pull-right label label-primary">
+                    {{flight.Depature}}
+                </span>
+            </div>
+            <div class="col-xs-1">
+                <a href="#/edit/{{flight.FlightNo}}">Edit</a>
+            </div>
+            <div class="col-xs-1">
+                <button ng-click="cancel(flight.FlightNo)">Cancel</button>
+            </div>
+        </div>
+
+        <div class="row">
+            <h2>Flights without gate</h2>
+        </div>
+        <div class="row" ng-repeat="flight in unAssignedFlights">
+            <div class="col-xs-1">
+                <strong>Flight NO</strong>
+            </div>
+            <div class="col-xs-1">
+                <span class="pull-right label label-primary">
+                    {{flight.FlightNo}}
+                </span>
+            </div>
+            <div class="col-xs-1">
+                <strong>Arrival</strong>
+            </div>
+            <div class="col-xs-1">
+                <span class="pull-right label label-primary">
+                    {{flight.Arrival}}
+                </span>
+            </div>
+            <div class="col-xs-1">
+                <strong>Depature</strong>
+            </div>
+            <div class="col-xs-1">
+                <span class="pull-right label label-primary">
+                    {{flight.Depature}}
+                </span>
+            </div>
+            <div class="col-md-3">
+                <button ng-click="AddToCurrentGate(flight.FlightNo)">Assign to Current Gate</button>
+            </div>
+        </div>
+    </div>
+</div>

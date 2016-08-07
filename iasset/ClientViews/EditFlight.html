@@ -1,0 +1,29 @@
+﻿<div ng-controller="flightController">
+    <h1>{{Title}}</h1>
+    <div class="col-xs-1">
+        <strong>Flight NO</strong>
+    </div>
+    <div class="col-xs-1">
+        <span class="label label-primary">
+            {{currentFlight.FlightNo}}
+        </span>
+    </div>
+    <div class="col-xs-1">
+        <strong>Arrival</strong>
+    </div>
+    <div class="col-xs-3">
+        <input type="text" ng-model="currentFlight.Arrival" />
+    </div>
+    <div class="col-xs-1">
+        <strong>Depature</strong>
+    </div>
+    <div class="col-xs-3">
+        <input type="text" ng-model="currentFlight.Depature" />
+    </div>
+    <div class="col-xs-1">
+        <button ng-click="save(currentFlight)">save</button>
+    </div>
+</div>
+<div>
+    <a href="#/">Back</a>
+</div>
