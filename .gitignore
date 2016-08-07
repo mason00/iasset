@@ -1,0 +1,10 @@
+packages/
+iasset/Bin/
+iasset/obj/
+TestResults/
+Test/Bin/
+Test/obj/
+/Data/bin/Debug
+/Data/obj/Debug
+/DataService/bin/Debug
+/DataService/obj/Debug

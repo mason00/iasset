@@ -1,0 +1,79 @@
+﻿<script>
+    angular.module("iassetApp", [])
+           .controller('gateController', function($scope, $http){
+               $scope.Title = "Gate management app";
+
+               $scope.gates = {};
+               $scope.currentGate = {}
+
+               $http.get('/api/Gate/Test')
+                    .success(function (data) {
+                        $scope.gates = data;
+                        $scope.currentGate = data[0];
+                        for (var i = 0; i < data.length; i++)
+                        {
+                            for (var j = 0; j < data[i].Flights.length; j++)
+                            {
+                                data[i].Flights[j].Arrival = new Date(data[i].Flights[j].Arrival).toLocaleTimeString();
+                                data[i].Flights[j].Depature = new Date(data[i].Flights[j].Depature).toLocaleTimeString();
+                            }
+                        }
+                    })
+                    .error(function (data) {
+                        console.log('get gates data error');
+                    });
+
+               $scope.cancel = function (FlightNo) {
+                   $scope.currentGate.Flights = $scope.currentGate.Flights.filter(function (flight) {
+                       return flight.FlightNo != FlightNo;
+                   })
+               };
+
+               $scope.select = function (gate) {
+                   $scope.currentGate = gate;
+               };
+           });
+</script>
+<div ng-controller="gateController">
+    <h1>{{Title}}</h1>
+    <div ng-repeat="gate in gates">
+        <button ng-click="select(gate)">Gate {{gate.GateNumber}}</button>
+    </div>
+    <div class="panel panel-default">
+        <div class="row">
+            <h2>Gate: {{currentGate.GateNumber}}</h2>
+        </div>
+            <div class="row" ng-repeat="flights in currentGate.Flights">
+                <div class="col-xs-1">
+                    <strong>Flight NO</strong>
+                </div>
+                <div class="col-xs-1">
+                    <span class="pull-right label label-primary">
+                        {{flights.FlightNo}}
+                    </span>
+                </div>
+                <div class="col-xs-1">
+                    <strong>Arrival</strong>
+                </div>
+                <div class="col-xs-1">
+                    <span class="pull-right label label-primary">
+                        {{flights.Arrival}}
+                    </span>
+                </div>
+                <div class="col-xs-1">
+                    <strong>Depature</strong>
+                </div>
+                <div class="col-xs-1">
+                    <span class="pull-right label label-primary">
+                        {{flights.Depature}}
+                    </span>
+                </div>
+                <div class="col-xs-1">
+                    <button  ng-click="edit(fligts.FlightNo)">Edit</button>
+                </div>
+                <div class="col-xs-1">
+                    <button  ng-click="cancel(flights.FlightNo)">Cancel</button>
+                </div>
+            </div>
+        </div>
+</div>
