@@ -232,6 +232,7 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="index.html" />
     <Content Include="Scripts\ai.0.22.19-build00125.js" />
     <Content Include="Scripts\ai.0.22.19-build00125.min.js" />
     <Content Include="Areas\HelpPage\Views\Web.config" />
@@ -294,6 +295,7 @@
     <Content Include="Scripts\app\app.js" />
     <Content Include="Scripts\app\flightController.js" />
     <Content Include="Scripts\app\gateController.js" />
+    <Content Include="Scripts\app\TestController.js" />
     <Content Include="Scripts\errors.json" />
     <Content Include="Scripts\angular.min.js.map" />
     <Content Include="Scripts\angular-touch.min.js.map" />

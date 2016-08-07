@@ -1,12 +1,9 @@
-﻿angular.module("iassetApp", ['ngRoute'])
+﻿angular.module("iassetApp")
 .controller('gateController', function ($scope, $http, $routeParams) {
     $scope.Title = "Gate management app";
-
-        
+    
     $scope.unAssignedFlights = [];
-
-    console.log($routeParams.flightNo);
-
+    
     $scope.cancel = function (FlightNo) {
         $scope.currentGate.Flights = $scope.currentGate.Flights.filter(function (flight) {
             var result = flight.FlightNo != FlightNo;

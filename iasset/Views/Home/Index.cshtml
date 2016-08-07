@@ -6,88 +6,16 @@ angular.module("iassetApp", ['ngRoute'])
             controller: 'gateController'
         });
 
-        $routeProvider.when("/edit/:flightNo", {
+        $routeProvider.when("/edit/:flightNo-:gateNo", {
             templateUrl: "/ClientViews/EditFlight.html",
             controller: 'flightController'
         });
     })
-    .controller('gateController', function ($scope, $http, $routeParams) {
-        $scope.Title = "Gate management app";
-        $scope.gates = {};
-        $scope.currentGate = {};
-        $scope.unAssignedFlights = [];
-        var loaded = false;
-
-        init = function () {
-            if (!loaded) {
-                $http.get('/api/Gate/Test')
-                .success(function (data) {
-                    $scope.gates = data;
-                    $scope.currentGate = $scope.gates[0];
-                    for (var i = 0; i < $scope.gates.length; i++) {
-                        for (var j = 0; j < $scope.gates[i].Flights.length; j++) {
-                            $scope.gates[i].Flights[j].Arrival = new Date($scope.gates[i].Flights[j].Arrival).toLocaleTimeString();
-                            $scope.gates[i].Flights[j].Depature = new Date($scope.gates[i].Flights[j].Depature).toLocaleTimeString();
-                        }
-                    }
-                    loaded = true;
-                })
-                .error(function (data) {
-                    console.log('get gates data error');
-                });
-            }
-        }
-
-        init();
-
-        $scope.cancel = function (FlightNo) {
-            $scope.currentGate.Flights = $scope.currentGate.Flights.filter(function (flight) {
-                var result = flight.FlightNo != FlightNo;
-                if (!result) {
-                    $scope.unAssignedFlights.push(flight);
-                }
-                return result;
-            });
-        };
-
-        $scope.edit = function () {
-            console.log($routeParams.flightNo)
-        }
-
-        $scope.select = function (gate) {
-            $scope.currentGate = gate;
-        };
-
-        $scope.AddToCurrentGate = function (FlightNo) {
-            var no = FlightNo;
-            $scope.unAssignedFlights = $scope.unAssignedFlights.filter(function (flight) {
-                if (flight.FlightNo == no) {
-                    $scope.currentGate.Flights.push(flight);
-                }
-                return flight.FlightNo != no;
-            });
-        }
-    })
-    .controller("flightController", function ($scope, $http, $routeParams) {
-        $scope.Title = "Edit flight";
-        $scope.FlightNo = $routeParams.flightNo;
-
-        init = function () {
-            angular.forEach($scope.currentGate.Flights, function (val, key) {
-                if (val.FlightNo == $scope.FlightNo) {
-                    $scope.currentFlight = val;
-                }
-            });
-        }
-
-        init();
-
-        $scope.save = function (flight) {
-            console.log(flight);
-        };
-    });
 </script>
+<script src="~/Scripts/app/app.js"></script>
+<script src="~/Scripts/app/gateController.js"></script>
+<script src="~/Scripts/app/flightController.js"></script>
 <script src="~/Scripts/angular-route.js"></script>
-<div ng-controller="gateController">
+<div ng-controller="appController">
     <ng-view />
 </div>
